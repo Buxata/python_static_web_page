@@ -1,24 +1,23 @@
 import unittest
 
-from src.nodes.htmlnode import HTMLNode
+from src.nodes.leafnode import LeafNode
 
-class TestHTMLNode(unittest.TestCase):
-    def test_constructor(self):
-        # Test the constructor sets properties correctly
-        node = HTMLNode("div", "Hello, world!", None, {"class": "greeting"})
-        self.assertEqual(node.tag, "div")
-        self.assertEqual(node.value, "Hello, world!")
-        self.assertEqual(node.props, {"class": "greeting"})
-        self.assertEqual(node.children, [])
 
-    def test_props_to_html(self):
-        # Test converting properties to HTML attribute string
-        node = HTMLNode("div", "", None, {"class": "container", "id": "main"})
-        self.assertEqual(node.props_to_html(), ' class="container" id="main"')
+class testLeafNode(unittest.TestCase):
 
-        # Test with no properties
-        node = HTMLNode("p", "text", None, {})
-        self.assertEqual(node.props_to_html(), "")
+    def test_to_html_with_no_children(self):
+        # Test converting to HTML with no children
+        # Text node (no tag)
+        text_node = LeafNode(None, "Just text", None)
+        self.assertEqual(text_node.to_html(), "Just text")
+
+    def test_leaf_to_html_p(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+
+    def test_leaf_to_html_anchor(self):
+        node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
+        self.assertEqual(node.to_html(), '<a href="https://www.google.com">Click me!</a>')
 
     # def test_to_html_with_no_children(self):
     #     # Test converting to HTML with no children
