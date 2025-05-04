@@ -1,6 +1,6 @@
 import unittest
 
-from src.nodes.textnode import TextNode, TextType
+from src.nodes.textnode import *
 
 
 class TestTextNode(unittest.TestCase):
@@ -33,7 +33,6 @@ class TestTextNode(unittest.TestCase):
         node1 = TextNode("Link text", TextType.LINK, "https://example.com")
         node2 = TextNode("Link text", TextType.LINK, "https://example.com")
         self.assertEqual(node1, node2)
-
 
 if __name__ == "__main__":
     unittest.main()
