@@ -34,6 +34,7 @@ some_other_image_nodes = [
     TextNode("Visit ![GitHub](https://github.com) for code repositories", TextType.TEXT),
 ]
 
+
 for type in all_types:
     print(type)
 
@@ -46,3 +47,6 @@ for type in all_types:
 #         print("Unknown")
 
 print(split_nodes_image(some_other_image_nodes))
+print(split_nodes_link(some_other_nodes))
+
+print(extract_markdown_links(text))
