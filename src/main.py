@@ -27,6 +27,12 @@ some_other_nodes = [
     TextNode("Here's a tutorial on [Python basics](https://docs.python.org/3/tutorial/index.html)", TextType.TEXT),
     TextNode("Visit [GitHub](https://github.com) for code repositories", TextType.TEXT),
 ]
+some_other_image_nodes = [
+    TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",TextType.TEXT),
+    TextNode("Check out ![my website](https://www.mysite.org) for more info", TextType.TEXT),
+    TextNode("Here's a tutorial on ![Python basics](https://docs.python.org/3/tutorial/index.html)", TextType.TEXT),
+    TextNode("Visit ![GitHub](https://github.com) for code repositories", TextType.TEXT),
+]
 
 for type in all_types:
     print(type)
@@ -39,6 +45,4 @@ for type in all_types:
 #     case _:
 #         print("Unknown")
 
-print(split_nodes_link(some_other_nodes))
-
-print(extract_markdown_links(text))
+print(split_nodes_image(some_other_image_nodes))

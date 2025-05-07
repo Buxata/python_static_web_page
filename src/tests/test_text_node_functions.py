@@ -1,7 +1,7 @@
 import unittest
 
 from src.nodes.textnode import TextNode, TextType
-from src.nodes.textnodefunctions import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images,extract_markdown_links
+from src.nodes.textnodefunctions import text_node_to_html_node, split_nodes_delimiter, split_nodes_image, split_nodes_link, extract_markdown_images,extract_markdown_links
 
 
 class TestTextNodeFunctions(unittest.TestCase):
@@ -11,6 +11,7 @@ class TestTextNodeFunctions(unittest.TestCase):
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.value, "This is a text node")
         self.assertEqual(html_node.tag, None)
+
 
     def test_bold(self):
         node = TextNode("This is a bold node", TextType.BOLD)
@@ -81,6 +82,43 @@ class TestTextNodeFunctions(unittest.TestCase):
             "This is text with a [link](https://example.com)"
         )
         self.assertListEqual([("link", "https://example.com")], matches)
+
+
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with an [image](https://i.imgur.com/zjjcJKZ.png) and another [second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
