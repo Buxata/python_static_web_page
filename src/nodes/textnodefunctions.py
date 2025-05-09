@@ -28,7 +28,6 @@ def text_node_to_html_node(text_node: TextNode):
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
 
-
     for node in old_nodes:
         delimited_text = node.text.split(delimiter)
         match delimiter:
@@ -62,34 +61,65 @@ def extract_markdown_links(text):
 
 def split_nodes_image(old_nodes):
     new_nodes = []
-    pattern = r'\[(.*?)\]\((.*?)\)'
+    pattern = r'!\[(.*?)\]\((.*?)\)'
 
-    for node in old_nodes:
-        temp = re.findall(pattern, node.text)
-        print(''.join(temp))
+    for old_node in old_nodes:
+        node: TextNode = old_node
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+            continue
 
-    return new_nodes
+        links = re.findall(pattern, node.text)
+
+        if not links:
+            new_nodes.append(node)
+            continue
+
+        remaining_text = old_node.text
+
+        for text,url in links:
+            parts = remaining_text.split(f"![{text}]({url})", 1)
+
+            if parts[0]:
+                new_nodes.append(TextNode(parts[0],TextType.TEXT))
+            new_nodes.append(TextNode(text,TextType.IMAGE,url))
+
+            remaining_text = parts[1] if len(parts) > 1 else ""
+
+        if remaining_text:
+            new_nodes.append(TextNode(remaining_text, TextType.TEXT))
+
+
 
     return new_nodes
 
 def split_nodes_link(old_nodes):
     new_nodes = []
-    pattern = r'\[([^\]]+)\]\(([^)]+)\)'
 
-    for node in old_nodes:
-        print(f'Node loop: \n{node}\n' )
-        temp = re.findall(pattern, node.text)
-        for member in temp:
-            print(member[0])
-            print(member[1])
-        print()
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
 
-        opposite = re.findall("^"+pattern, node.text)
-        for member in opposite:
-            print(member)
-        print()
+        links = extract_markdown_links(old_node.text)
 
-        # print(''.join(temp))
-        new_nodes.append(temp)
+        if not links:
+            new_nodes.append(old_node)
+            continue
+
+        remaining_text = old_node.text
+
+        for text, url in links:
+            parts = remaining_text.split(f"[{text}]({url})", 1)
+
+            if parts[0]:
+                new_nodes.append(TextNode(parts[0], TextType.TEXT))
+            new_nodes.append(TextNode(text, TextType.LINK, url))
+
+            remaining_text = parts[1] if len(parts) > 1 else ""
+
+        if remaining_text:
+            new_nodes.append(TextNode(remaining_text, TextType.TEXT))
+
 
     return new_nodes
