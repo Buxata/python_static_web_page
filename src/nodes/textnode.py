@@ -4,37 +4,18 @@ class Delimiter(Enum):
     BOLD = '**',
     ITALIC = '_',
     CODE = '`',
-    HEADER1 = '#',
-    HEADER2 = '##',
-    HEADER3 = '###'
-    HEADER4 = '####',
-    HEADER5 = '#####',
-    HEADER6 = '######'
 
 delimiters = {
     Delimiter.BOLD: "**",
     Delimiter.ITALIC: "_",
     Delimiter.CODE: "`",
-    Delimiter.HEADER1: "#",
-    Delimiter.HEADER2: "##",
-    Delimiter.HEADER3: "###",
-    Delimiter.HEADER4: "####",
-    Delimiter.HEADER5: "#####",
-    Delimiter.HEADER6: "######"
 }
-
 
 
 delimiters_regex_match = {
     Delimiter.BOLD: r'(\*\*|__)(.*?)\1',
     Delimiter.ITALIC: r'(?<!\*)\*(?!\*)(.*?)\*(?!\*)|(?<!_)_(?!_)(.*?)_(?!_)',
     Delimiter.CODE: r'`([^`\n]+?)`',
-    Delimiter.HEADER1: r'^# (.+)$ ',
-    Delimiter.HEADER2: r'^## (.+)$',
-    Delimiter.HEADER3: r'^### (.+)$',
-    Delimiter.HEADER4: r'^#### (.+)$',
-    Delimiter.HEADER5: r'^##### (.+)$',
-    Delimiter.HEADER6: r'^###### (.+)$'
 }
 
 class TextType(Enum):
@@ -71,10 +52,4 @@ delimiters_to_text_type = {
     Delimiter.BOLD: TextType.BOLD,
     Delimiter.ITALIC: TextType.ITALIC,
     Delimiter.CODE: TextType.CODE,
-    Delimiter.HEADER1: TextType.HEADER1,
-    Delimiter.HEADER2: TextType.HEADER2,
-    Delimiter.HEADER3: TextType.HEADER3,
-    Delimiter.HEADER4: TextType.HEADER4,
-    Delimiter.HEADER5: TextType.HEADER5,
-    Delimiter.HEADER6: TextType.HEADER6,
 }

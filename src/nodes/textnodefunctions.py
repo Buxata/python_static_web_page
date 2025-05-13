@@ -7,18 +7,6 @@ import re
 def text_node_to_html_node(text_node: TextNode):
     type = text_node.text_type
     match type:
-        case TextType.HEADER1:
-            return LeafNode('h1', text_node.text)
-        case TextType.HEADER2:
-            return LeafNode('h2', text_node.text)
-        case TextType.HEADER3:
-            return LeafNode('h3', text_node.text)
-        case TextType.HEADER4:
-            return LeafNode('h4', text_node.text)
-        case TextType.HEADER5:
-            return LeafNode('h5', text_node.text)
-        case TextType.HEADER6:
-            return LeafNode('h6', text_node.text)
         case TextType.TEXT:
             return LeafNode(None, text_node.text)
         case TextType.NORMAL:
@@ -40,7 +28,6 @@ def handle_delimited_text(delimited_text, text_type, delimiter, has_leading_deli
     nodes = []
 
     switcher = has_leading_delimiter
-    print(delimited_text)
     for text in delimited_text:
         if text!="":
             if switcher:
@@ -58,19 +45,11 @@ def handle_italic(delimited_text, delimiter, text_type, has_leading_delimiter):
     return handle_delimited_text(delimited_text, text_type, delimiter, has_leading_delimiter)
 def handle_code(delimited_text, delimiter, text_type, has_leading_delimiter):
     return handle_delimited_text(delimited_text, text_type, delimiter, has_leading_delimiter)
-def handle_header(delimited_text, delimiter, text_type, has_leading_delimiter):
-    return handle_delimited_text(delimited_text, text_type, delimiter, has_leading_delimiter)
 
 delimiter_handlers = {
     Delimiter.BOLD: handle_bold,
     Delimiter.ITALIC: handle_italic,
     Delimiter.CODE: handle_code,
-    Delimiter.HEADER1: lambda dt, d, tt, hld: handle_header(dt, d, tt, hld),
-    Delimiter.HEADER2: lambda dt, d, tt, hld: handle_header(dt, d, tt, hld),
-    Delimiter.HEADER3: lambda dt, d, tt, hld: handle_header(dt, d, tt, hld),
-    Delimiter.HEADER4: lambda dt, d, tt, hld: handle_header(dt, d, tt, hld),
-    Delimiter.HEADER5: lambda dt, d, tt, hld: handle_header(dt, d, tt, hld),
-    Delimiter.HEADER6: lambda dt, d, tt, hld: handle_header(dt, d, tt, hld),
 }
 
 def split_nodes_delimiter(old_nodes, delimiter: Delimiter, text_type):
@@ -179,10 +158,7 @@ def text_to_textnodes(text):
         nodes.append(TextNode(text, TextType.TEXT))
 
         for delimiter, text_type in delimiters_to_text_type.items():
-            print(text_type)
-            print(delimiter)
             nodes = split_nodes_delimiter(nodes, delimiter,text_type)
-            print(nodes)
         nodes = split_nodes_image(nodes)
         nodes = split_nodes_link(nodes)
     return nodes
