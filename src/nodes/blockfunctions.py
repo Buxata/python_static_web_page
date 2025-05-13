@@ -1,4 +1,5 @@
 from enum import Enum
+from src.nodes.htmlnode import HTMLNode
 import re
 
 
@@ -16,6 +17,14 @@ blocks_regex_match = {
     BlockType.QUOTE: r'^>',
     BlockType.UNORDERED_LIST: r"^(?:\s*[-*+]\s+.+\n?)+$",
     BlockType.ORDERED_LIST: r"^(?:\s*\d+\.\s+.+\n?)+$",
+}
+
+blocks_to_html_tag = {
+    BlockType.HEADING: "h",
+    BlockType.CODE: "pre",
+    BlockType.QUOTE: "blockquote",
+    BlockType.UNORDERED_LIST: "ul",
+    BlockType.ORDERED_LIST: "ol",
 }
 
 def is_valid_ordered_list(text):
@@ -44,3 +53,16 @@ def block_to_block_type(block):
     if is_valid_ordered_list(block):
         return BlockType.ORDERED_LIST
     return BlockType.PARAGRAPH
+
+def handle_heading(text):
+    return text
+
+def text_to_children(text):
+    return text
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    # create html parrent node
+
+    for block in blocks:
+       node = HTMLNode(blocks_to_html_tag[block_to_block_type(block)], block, None, None)
