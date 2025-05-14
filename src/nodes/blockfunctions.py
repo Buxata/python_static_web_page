@@ -1,6 +1,9 @@
 from enum import Enum
+from nodes.textnode import TextNode, TextType
 from src.nodes.htmlnode import HTMLNode
+from src.nodes.textnodefunctions import text_node_to_html_node
 import re
+from wave import Error
 
 
 class BlockType(Enum):
@@ -41,6 +44,12 @@ def is_valid_ordered_list(text):
 def markdown_to_blocks(markdown):
     return list(map(lambda x: x.strip('\n'), markdown.split('\n\n')))
 
+def check_heading_lvl (text):
+    temp = 0
+    while text[temp] != '#':
+        temp+=1
+    return str(temp+1)
+
 def block_to_block_type(block):
     if re.match(blocks_regex_match[BlockType.HEADING], block):
         return BlockType.HEADING
@@ -54,15 +63,53 @@ def block_to_block_type(block):
         return BlockType.ORDERED_LIST
     return BlockType.PARAGRAPH
 
+
+
 def handle_heading(text):
-    return text
+    text_node_to_html_node
+
+def handle_quote(text):
+    text_node_to_html_node
+
+def handle_unordered_list(text):
+    text_node_to_html_node
+
+def handle_ordered_list(text):
+    text_node_to_html_node
+
+block_handlers = {
+    BlockType.HEADING: handle_heading,
+    BlockType.QUOTE: handle_quote,
+    BlockType.UNORDERED_LIST: handle_unordered_list,
+    BlockType.ORDERED_LIST: handle_ordered_list,
+}
 
 def text_to_children(text):
-    return text
+    if text == None:
+        raise ValueError("Text cannot be None")
+    handler = block_handlers.get(block_to_block_type(text))
+    if handler:
+        return handler(text)
+    else:
+        return [TextNode(text, TextType.TEXT)]
 
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
     # create html parrent node
 
+    nodes = []
+
     for block in blocks:
-       node = HTMLNode(blocks_to_html_tag[block_to_block_type(block)], block, None, None)
+        match block_to_block_type(block):
+            case BlockType.HEADING:
+                nodes.append(HTMLNode('h'+check_heading_lvl(block), '', text_to_children(block)))
+            case BlockType.CODE:
+                nodes.append(HTMLNode('pre', block))
+            case BlockType.QUOTE:
+                nodes.append(HTMLNode('blockquote', block))
+            case BlockType.UNORDERED_LIST:
+                nodes.append(HTMLNode('ul', block))
+            case BlockType.ORDERED_LIST:
+                nodes.append(HTMLNode('ol', block))
+            case BlockType.PARAGRAPH:
+                nodes.append(HTMLNode('p', block))

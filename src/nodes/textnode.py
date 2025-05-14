@@ -11,7 +11,6 @@ delimiters = {
     Delimiter.CODE: "`",
 }
 
-
 delimiters_regex_match = {
     Delimiter.BOLD: r'(\*\*|__)(.*?)\1',
     Delimiter.ITALIC: r'(?<!\*)\*(?!\*)(.*?)\*(?!\*)|(?<!_)_(?!_)(.*?)_(?!_)',
@@ -26,12 +25,6 @@ class TextType(Enum):
     CODE = "code"
     LINK = "link"
     IMAGE = "image"
-    HEADER1 =  "header1"
-    HEADER2 = "header2"
-    HEADER3 = "header3"
-    HEADER4 = "header4"
-    HEADER5 = "header5"
-    HEADER6 = "header6"
 
 class TextNode():
     def __init__(self, text, text_type:TextType, url=None):
