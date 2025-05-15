@@ -2,6 +2,8 @@
 from nodes.textnodefunctions import split_nodes_image, split_nodes_link, extract_markdown_links,text_to_textnodes,split_nodes_delimiter
 
 from nodes.textnode import TextType, TextNode, Delimiter
+
+from nodes.blockfunctions import markdown_to_html_node
 # print("hello world")
 
 # text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
@@ -45,9 +47,9 @@ from nodes.textnode import TextType, TextNode, Delimiter
 
 # print(extract_markdown_links(text))
 
-text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-print("FROM MAIN")
-print(text_to_textnodes(text))
+# text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+# print("FROM MAIN")
+# print(text_to_textnodes(text))
 # node = TextNode("Here is `code1` and also `code2`", TextType.TEXT)
 # print (node)
 # new_nodes = split_nodes_delimiter([node], Delimiter.CODE, TextType.CODE)
@@ -87,3 +89,51 @@ print(text_to_textnodes(text))
 
 # print("FROM MAIN")
 # print (final_nodes)
+
+def test_paragraphs():
+    md = """
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+
+    node = markdown_to_html_node(md)
+    html = node.to_html()
+    return (html, md, html=="<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>")
+
+def test_codeblock():
+    md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
+
+    node = markdown_to_html_node(md)
+    html = node.to_html()
+    return (html, md, html=="<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>")
+
+code = test_codeblock()
+print(code[0])
+print("<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>")
+print(code[0])
+print(code[1])
+print(code[2])
+print(test_codeblock())
+
+print()
+print("Next test for paragraphs")
+print()
+
+paragraphs = test_paragraphs()
+print("Converted HTML")
+print()
+print(paragraphs[0])
+print("What it needs to be")
+print()
+print("<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>")
+print()
+print(paragraphs[2])

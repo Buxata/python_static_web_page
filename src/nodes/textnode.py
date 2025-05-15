@@ -41,6 +41,8 @@ class TextNode():
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
+
+
 delimiters_to_text_type = {
     Delimiter.BOLD: TextType.BOLD,
     Delimiter.ITALIC: TextType.ITALIC,

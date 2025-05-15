@@ -1,9 +1,11 @@
 from enum import Enum
+from nodes.htmlnode import HTMLNode
 from nodes.textnode import TextNode, TextType
-from src.nodes.htmlnode import HTMLNode
-from src.nodes.textnodefunctions import text_node_to_html_node
+from nodes.parentnode import ParentNode
+from nodes.leafnode import LeafNode
+from nodes.textnodefunctions import text_node_to_html_node, text_to_textnodes
 import re
-from wave import Error
+import warnings
 
 
 class BlockType(Enum):
@@ -44,6 +46,8 @@ def is_valid_ordered_list(text):
 def markdown_to_blocks(markdown):
     return list(map(lambda x: x.strip('\n'), markdown.split('\n\n')))
 
+
+
 def check_heading_lvl (text):
     temp = 0
     while text[temp] != '#':
@@ -51,37 +55,70 @@ def check_heading_lvl (text):
     return str(temp+1)
 
 def block_to_block_type(block):
+    if block == '':
+        return None
     if re.match(blocks_regex_match[BlockType.HEADING], block):
+        # print("heading")
         return BlockType.HEADING
     if re.match(blocks_regex_match[BlockType.CODE], block):
+        # print("code")
         return BlockType.CODE
     if re.match(blocks_regex_match[BlockType.QUOTE], block):
+        # print("quote")
         return BlockType.QUOTE
     if re.match(blocks_regex_match[BlockType.UNORDERED_LIST], block, re.MULTILINE):
+        # print("unordered_list")
         return BlockType.UNORDERED_LIST
     if is_valid_ordered_list(block):
+        # print("ordered_list")
         return BlockType.ORDERED_LIST
+    # print("paragraph")
     return BlockType.PARAGRAPH
 
-
+def handle_code(text):
+    temp = text.strip('```').lstrip('\n')
+    return [LeafNode('code', temp)]
 
 def handle_heading(text):
-    text_node_to_html_node
+    children = text_to_textnodes(text)
+    return list(map(text_node_to_html_node, children))
 
 def handle_quote(text):
-    text_node_to_html_node
+    children = text_to_textnodes(text)
+    return list(map(text_node_to_html_node, children))
 
 def handle_unordered_list(text):
-    text_node_to_html_node
+    nodes = []
+
+    bulets = text.split('\n')
+    for bulet in bulets:
+        children = text_to_textnodes(bulet)
+        if bulet.startswith('-'):
+            nodes.append(ParentNode('li', list(map(text_node_to_html_node, children))))
+        else:
+            nodes.extend(list(map(text_node_to_html_node, children)))
+    return nodes
 
 def handle_ordered_list(text):
-    text_node_to_html_node
+    nodes = []
+
+    bulets = text.split('\n')
+    for bulet in bulets:
+        children = text_to_textnodes(bulet)
+        if bulet[0].isdigit():
+            nodes.append(ParentNode('li', list(map(text_node_to_html_node, children))))
+        else:
+            nodes.extend(list(map(text_node_to_html_node, children)))
+    return nodes
+
 
 block_handlers = {
+    BlockType.CODE: handle_code,
     BlockType.HEADING: handle_heading,
     BlockType.QUOTE: handle_quote,
     BlockType.UNORDERED_LIST: handle_unordered_list,
     BlockType.ORDERED_LIST: handle_ordered_list,
+    None:None
 }
 
 def text_to_children(text):
@@ -91,25 +128,28 @@ def text_to_children(text):
     if handler:
         return handler(text)
     else:
-        return [TextNode(text, TextType.TEXT)]
+        nodes = text_to_textnodes(text)
+        htmlnodes = list(map(text_node_to_html_node, nodes))
+        return htmlnodes
 
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
-    # create html parrent node
-
     nodes = []
-
     for block in blocks:
         match block_to_block_type(block):
             case BlockType.HEADING:
-                nodes.append(HTMLNode('h'+check_heading_lvl(block), '', text_to_children(block)))
+                nodes.append(ParentNode('h'+check_heading_lvl(block), text_to_children(block)))
             case BlockType.CODE:
-                nodes.append(HTMLNode('pre', block))
+                nodes.append(ParentNode('pre',text_to_children(block)))
             case BlockType.QUOTE:
-                nodes.append(HTMLNode('blockquote', block))
+                nodes.append(ParentNode('blockquote',text_to_children(block)))
             case BlockType.UNORDERED_LIST:
-                nodes.append(HTMLNode('ul', block))
+                nodes.append(ParentNode('ul', text_to_children(block)))
             case BlockType.ORDERED_LIST:
-                nodes.append(HTMLNode('ol', block))
+                nodes.append(ParentNode('ol', text_to_children(block)))
             case BlockType.PARAGRAPH:
-                nodes.append(HTMLNode('p', block))
+                nodes.append(ParentNode('p', text_to_children(block)))
+            case _:
+                warnings.warn('No block type was identified. This could be just an empty block.')
+    main_node = ParentNode('div', nodes)
+    return main_node

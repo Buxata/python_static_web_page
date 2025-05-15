@@ -8,7 +8,8 @@ def text_node_to_html_node(text_node: TextNode):
     type = text_node.text_type
     match type:
         case TextType.TEXT:
-            return LeafNode(None, text_node.text)
+            temp = text_node.text.replace('\n', ' ')
+            return LeafNode(None, temp)
         case TextType.NORMAL:
             return LeafNode('p', text_node.text)
         case TextType.BOLD:
@@ -90,7 +91,6 @@ def split_nodes_image(old_nodes):
             continue
 
         links = extract_markdown_images(old_node.text)
-
 
         if not links:
             new_nodes.append(old_node)
