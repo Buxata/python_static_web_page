@@ -85,5 +85,49 @@ the **same** even with inline stuff
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
 
+
+    def test_lists_unordered(self):
+        md = """
+- This is a list
+- with items
+- and more items
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>This is a list</li><li>with items</li><li>and more items</li></ul></div>",
+        )
+
+    def test_lists_ordered(self):
+        md = """
+1. First item
+2. Second item
+3. Third item
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>First item</li><li>Second item</li><li>Third item</li></ol></div>",
+        )
+
+    def test_headings(self):
+        md = """
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3></div>",
+        )
 if __name__ == "__main__":
     unittest.main()

@@ -48,11 +48,14 @@ def markdown_to_blocks(markdown):
 
 
 
-def check_heading_lvl (text):
-    temp = 0
-    while text[temp] != '#':
-        temp+=1
-    return str(temp+1)
+def check_heading_lvl(text):
+    # Count the number of # symbols at the beginning of the text
+    count = 0
+    for char in text:
+        if char == '#':
+            count+=1
+        else:
+            return str(count)
 
 def block_to_block_type(block):
     if block == '':
@@ -80,7 +83,9 @@ def handle_code(text):
     return [LeafNode('code', temp)]
 
 def handle_heading(text):
-    children = text_to_textnodes(text)
+    # Remove the heading markers (# symbols) from the text
+    clean_text = re.sub(r'^#+\s*', '', text)
+    children = text_to_textnodes(clean_text)
     return list(map(text_node_to_html_node, children))
 
 def handle_quote(text):
@@ -90,25 +95,25 @@ def handle_quote(text):
 def handle_unordered_list(text):
     nodes = []
 
-    bulets = text.split('\n')
-    for bulet in bulets:
-        children = text_to_textnodes(bulet)
-        if bulet.startswith('-'):
+    bullets = text.split('\n')
+    for bullet in bullets:
+        # Remove the bullet marker (- ) from the text
+        clean_bullet = re.sub(r'^\s*[-*+]\s+', '', bullet)
+        children = text_to_textnodes(clean_bullet)
+        if bullet.strip():
             nodes.append(ParentNode('li', list(map(text_node_to_html_node, children))))
-        else:
-            nodes.extend(list(map(text_node_to_html_node, children)))
     return nodes
 
 def handle_ordered_list(text):
     nodes = []
 
-    bulets = text.split('\n')
-    for bulet in bulets:
-        children = text_to_textnodes(bulet)
-        if bulet[0].isdigit():
+    items = text.split('\n')
+    for item in items:
+        # Remove the number prefix (1., 2., etc.) from the text
+        clean_item = re.sub(r'^\s*\d+\.\s+', '', item)
+        children = text_to_textnodes(clean_item)
+        if item.strip():
             nodes.append(ParentNode('li', list(map(text_node_to_html_node, children))))
-        else:
-            nodes.extend(list(map(text_node_to_html_node, children)))
     return nodes
 
 
