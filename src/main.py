@@ -8,12 +8,12 @@ def main():
     if sys.argv[1] and sys.argv[1]!= "src/main.py":
         basepath = sys.argv[1]
 
-    if os.path.exists("public"):
-        shutil.rmtree("public")
+    if os.path.exists("docs"):
+        shutil.rmtree("docs")
 
     # os.mkdir("public")
     # print (str(os.listdir("static")))
-    shutil.copytree("static", "public")
+    shutil.copytree("static", "docs")
 
     pages = generate_pages_recursive("content", "template.html", "docs", basepath)
     if pages:
