@@ -12,13 +12,13 @@ class TestUtilitiesFunctions(unittest.TestCase):
         markdown = "Some text without a markdown header"
         with self.assertRaises(Exception) as context:
             extract_title(markdown)
-        self.assertEqual(str(context.exception), "No title's found")
+        self.assertEqual(str(context.exception), "No title found")
 
     def test_extract_title_invalid_header(self):
         markdown = "## NotATitle"
         with self.assertRaises(Exception) as context:
             extract_title(markdown)
-        self.assertEqual(str(context.exception), "No title's found")
+        self.assertEqual(str(context.exception), "No title found")
 
 if __name__ == "__main__":
     unittest.main()

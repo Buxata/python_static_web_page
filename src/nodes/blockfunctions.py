@@ -1,6 +1,4 @@
 from enum import Enum
-from nodes.htmlnode import HTMLNode
-from nodes.textnode import TextNode, TextType
 from nodes.parentnode import ParentNode
 from nodes.leafnode import LeafNode
 from nodes.textnodefunctions import text_node_to_html_node, text_to_textnodes
@@ -56,6 +54,7 @@ def check_heading_lvl(text):
             count+=1
         else:
             return str(count)
+    return ''
 
 def block_to_block_type(block):
     if block == '':
@@ -83,13 +82,13 @@ def handle_code(text):
     return [LeafNode('code', temp)]
 
 def handle_heading(text):
-    # Remove the heading markers (# symbols) from the text
     clean_text = re.sub(r'^#+\s*', '', text)
     children = text_to_textnodes(clean_text)
     return list(map(text_node_to_html_node, children))
 
 def handle_quote(text):
-    children = text_to_textnodes(text)
+    lines = list(map(lambda x: x.strip(),text.strip("> ").split('\n>')))
+    children = text_to_textnodes('<br>'.join(lines))
     return list(map(text_node_to_html_node, children))
 
 def handle_unordered_list(text):

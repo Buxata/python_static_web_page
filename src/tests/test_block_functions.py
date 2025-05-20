@@ -129,5 +129,20 @@ the **same** even with inline stuff
             html,
             "<div><h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3></div>",
         )
+
+    def test_quote_block_type(self):
+        block = "> This is a quote block"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.QUOTE)
+
+    def test_quote_block(self):
+        md = "> This is a quote block"
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a quote block</blockquote></div>",
+        )
+
 if __name__ == "__main__":
     unittest.main()

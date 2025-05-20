@@ -1,5 +1,5 @@
 import os, shutil
-from nodes.utilities import extract_title, generate_page
+from nodes.utilities import generate_pages_recursive
 
 def main():
     if os.path.exists("public"):
@@ -9,8 +9,10 @@ def main():
     # print (str(os.listdir("static")))
     shutil.copytree("static", "public")
 
-    file = generate_page("content/index.md", "template.html", "")
-    print (file)
+    pages = generate_pages_recursive("content", "template.html", "public")
+    if pages:
+        print(f"There are pages {True}")
+
 
 
 main()

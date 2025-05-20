@@ -1,9 +1,12 @@
-from nodes.utilities import extract_title
+# from nodes.utilities import extract_title
+
+
+
 # from nodes.textnodefunctions import split_nodes_image, split_nodes_link, extract_markdown_links,text_to_textnodes,split_nodes_delimiter
 
 # from nodes.textnode import TextType, TextNode, Delimiter
 
-# from nodes.blockfunctions import markdown_to_html_node
+from nodes.blockfunctions import markdown_to_html_node
 # print("hello world")
 
 # text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
@@ -139,11 +142,25 @@ from nodes.utilities import extract_title
 # print(paragraphs[2])
 
 
-print("Starting python code")
+# print("Starting python code")
 
-markdown = '''# My Title
-Some additional text'''
-print(extract_title(markdown))
+# markdown = '''# My Title
+# Some additional text'''
+# print(extract_title(markdown))
 
-markdown = "## NotATitle"
-print(extract_title(markdown))
+# markdown = "## NotATitle"
+# print(extract_title(markdown))
+
+md = "> This is a quote block"
+node = markdown_to_html_node(md)
+html = node.to_html()
+print (html)
+
+md = """
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
+"""
+node = markdown_to_html_node(md)
+html = node.to_html()
+print (html)
