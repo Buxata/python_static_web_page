@@ -5,8 +5,8 @@ from email.mime import base
 def main():
 
     basepath = '/'
-    if sys.argv[0] and sys.argv[0]!= "src/main.py":
-        basepath = sys.argv[0]
+    if sys.argv[1] and sys.argv[1]!= "src/main.py":
+        basepath = sys.argv[1]
 
     if os.path.exists("public"):
         shutil.rmtree("public")
