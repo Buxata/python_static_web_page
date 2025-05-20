@@ -1,4 +1,4 @@
-
+from nodes.utilities import extract_title
 # from nodes.textnodefunctions import split_nodes_image, split_nodes_link, extract_markdown_links,text_to_textnodes,split_nodes_delimiter
 
 # from nodes.textnode import TextType, TextNode, Delimiter
@@ -140,3 +140,10 @@
 
 
 print("Starting python code")
+
+markdown = '''# My Title
+Some additional text'''
+print(extract_title(markdown))
+
+markdown = "## NotATitle"
+print(extract_title(markdown))

@@ -4,6 +4,9 @@ class ParentNode(HTMLNode):
     def __init__(self, tag, children):
         super().__init__(tag, None, children, props=None)
 
+    def __repr__(self):
+        return f"<_nodes.Parrent Node({self.tag}, {len(self.children)} children)>"
+
     def to_html(self):
         if not self.tag:
             raise ValueError("Tag is required")
