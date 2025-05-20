@@ -1,6 +1,5 @@
 import os, shutil, sys
 from nodes.utilities import generate_pages_recursive
-from email.mime import base
 
 def main():
 
