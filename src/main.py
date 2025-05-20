@@ -1,7 +1,13 @@
-import os, shutil
+import os, shutil, sys
 from nodes.utilities import generate_pages_recursive
+from email.mime import base
 
 def main():
+
+    basepath = '/'
+    if sys.argv[0] and sys.argv[0]!= "src/main.py":
+        basepath = sys.argv[0]
+
     if os.path.exists("public"):
         shutil.rmtree("public")
 
@@ -9,7 +15,7 @@ def main():
     # print (str(os.listdir("static")))
     shutil.copytree("static", "public")
 
-    pages = generate_pages_recursive("content", "template.html", "public")
+    pages = generate_pages_recursive("content", "template.html", "docs", basepath)
     if pages:
         print(f"There are pages {True}")
 

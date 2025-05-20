@@ -11,7 +11,7 @@ def extract_title(markdown):
     else:
         raise Exception("No title found")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
 
@@ -22,6 +22,9 @@ def generate_page(from_path, template_path, dest_path):
 
     template_file = template_file.replace("{{ Title }}", title)
     template_file = template_file.replace("{{ Content }}", html_node.to_html())
+    template_file = template_file.replace('href="/', f'href="{basepath}')
+    template_file = template_file.replace('src="/', f'src="{basepath}')
+
     destination_dir = '/'.join(dest_path.split('/')[:-1])
     print(destination_dir)
     if not os.path.exists(destination_dir):
@@ -32,17 +35,17 @@ def generate_page(from_path, template_path, dest_path):
 
     return template_file
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     directory = os.scandir(dir_path_content)
     for entry in directory:
         if entry.is_file():
             print(f"this is a file {entry.name}")
             input_file_name = dir_path_content+ "/" + entry.name
             output_file_name = dest_dir_path + "/" + entry.name.split('.')[0] + ".html"
-            generate_page(input_file_name, template_path, output_file_name)
+            generate_page(input_file_name, template_path, output_file_name, basepath)
         else:
             print(f"this is a directory {entry.name} ")
             input_files_directory = dir_path_content+ "/" + entry.name
             output_files_directory = dest_dir_path + "/" + entry.name
-            generate_pages_recursive(input_files_directory, template_path, output_files_directory)
+            generate_pages_recursive(input_files_directory, template_path, output_files_directory, basepath)
     return "Something"
